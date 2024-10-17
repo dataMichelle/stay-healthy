@@ -1,11 +1,22 @@
 import localFont from "next/font/local";
+import { Inter } from "next/font/google";
+import Navbar from "./../components/Navbar";
 import "./globals.css";
+import SessionLayout from "./../components/SessionLayout";
 
+// Google Inter Font
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+});
+
+// Local fonts
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
   weight: "100 900",
 });
+
 const geistMono = localFont({
   src: "./fonts/GeistMonoVF.woff",
   variable: "--font-geist-mono",
@@ -21,9 +32,12 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${inter.variable} ${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <SessionLayout>
+          <Navbar />
+          {children}
+        </SessionLayout>
       </body>
     </html>
   );
