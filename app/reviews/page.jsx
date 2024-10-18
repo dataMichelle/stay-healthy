@@ -1,16 +1,20 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import doctorData from "../../data/doctors"; // Adjust the import path as necessary
+import doctorData from "../../data/doctors";
 import Modal from "@/components/Modal";
 import FeedbackForm from "@/components/FeedbackForm";
+import { PiSortAscendingFill } from "react-icons/pi";
 
 export default function ReviewsPage() {
   const [reviews, setReviews] = useState(
     JSON.parse(localStorage.getItem("reviews")) || {}
   );
   const [sortedDoctors, setSortedDoctors] = useState(doctorData.doctors);
-  const [sortConfig, setSortConfig] = useState({ key: null, direction: null });
+  const [sortConfig, setSortConfig] = useState({
+    key: "lastName",
+    direction: "ascending",
+  });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedDoctor, setSelectedDoctor] = useState(null);
 
@@ -62,7 +66,7 @@ export default function ReviewsPage() {
         {[1, 2, 3, 4, 5].map((star) => (
           <span
             key={star}
-            className={`cursor-pointer text-2xl ${
+            className={`cursor-pointer text-xl sm:text-2xl ${
               star <= rating ? "text-yellow-500" : "text-gray-400"
             }`}
           >
@@ -73,67 +77,54 @@ export default function ReviewsPage() {
     );
   };
 
+  useEffect(() => {
+    sortDoctors("lastName"); // Initial sort by last name when component mounts
+  }, []);
+
   return (
-    <div className="mt-10 mx-auto w-4/5">
-      <h1>Reviews</h1>
+    <div className="mt-10 mx-auto w-full px-4 sm:px-8 lg:w-4/5">
+      <h1 className="text-gray-600 text-center text-2xl sm:text-3xl">
+        Reviews
+      </h1>
       <p className="mt-5 mb-8 text-center">
         Read reviews from our satisfied customers.
       </p>
-      <table className="min-w-full bg-white mt-5 border">
-        <thead>
-          <tr>
-            <th className="py-2 px-4 border-b">
-              Doctor Name
-              <span
-                onClick={() => sortDoctors("lastName")}
-                className="ml-2 cursor-pointer text-sm font-normal"
+      <div className="flex justify-end mb-4">
+        <p>Sort </p>
+        <PiSortAscendingFill
+          onClick={() => sortDoctors("lastName")}
+          className="text-2xl cursor-pointer text-gray-600 hover:text-gray-800"
+        />
+      </div>
+      <div className="grid gap-6 sm:grid-cols-1 lg:grid-cols-2">
+        {sortedDoctors.map((doctor) => (
+          <div
+            key={doctor.id}
+            className="border rounded-lg p-4 bg-white shadow-md m-4" // Uniform margin for all views
+          >
+            <h2 className="text-lg font-semibold">
+              Dr. {doctor.firstName} {doctor.lastName}
+            </h2>
+            <p className="text-sm text-gray-600 mb-2">{doctor.specialty}</p>
+            <div className="mb-2">
+              <button
+                onClick={() => handleGiveReview(doctor)}
+                className="bg-teal-600 text-white py-1 px-3 rounded text-xs"
               >
-                sort{" "}
-                {sortConfig.key === "lastName" &&
-                  (sortConfig.direction === "ascending" ? "▲" : "▼")}
-              </span>
-            </th>
-            <th className="py-2 px-4 border-b">
-              Specialty
-              <span
-                onClick={() => sortDoctors("specialty")}
-                className="ml-2 cursor-pointer text-sm font-normal"
-              >
-                sort{" "}
-                {sortConfig.key === "specialty" &&
-                  (sortConfig.direction === "ascending" ? "▲" : "▼")}
-              </span>
-            </th>
-            <th className="py-2 px-4 border-b">Provide Review</th>
-            <th className="py-2 px-4 border-b">Review Given</th>
-            <th className="py-2 px-4 border-b">Rating Given</th>
-          </tr>
-        </thead>
-        <tbody>
-          {sortedDoctors.map((doctor) => (
-            <tr key={doctor.id}>
-              <td className="py-2 px-4 border-b">
-                Dr. {doctor.firstName} {doctor.lastName}
-              </td>
-              <td className="py-2 px-4 border-b">{doctor.specialty}</td>
-              <td className="py-2 px-4 border-b">
-                <button
-                  onClick={() => handleGiveReview(doctor)}
-                  className="bg-teal-600 text-white py-1 px-3 rounded"
-                >
-                  Give Review
-                </button>
-              </td>
-              <td className="py-2 px-4 border-b">
-                {reviews[doctor.id]?.review || "No review given"}
-              </td>
-              <td className="py-2 px-4 border-b">
-                {renderStars(reviews[doctor.id]?.rating || 0)}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+                Give Review
+              </button>
+            </div>
+            <div className="mb-2">
+              <strong>Review:</strong>{" "}
+              {reviews[doctor.id]?.review || "No review given"}
+            </div>
+            <div>
+              <strong>Rating:</strong>{" "}
+              {renderStars(reviews[doctor.id]?.rating || 0)}
+            </div>
+          </div>
+        ))}
+      </div>
       <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}

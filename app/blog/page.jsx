@@ -48,15 +48,19 @@ export default function BlogPage() {
 
   return (
     <div className="mt-10 mx-auto w-4/5">
-      <h1>Health Blog</h1>
+      <h1 className="text-gray-600">Health Blog</h1>
 
       {/* Health Tips Section */}
-      <section className="mb-10">
-        <h2 className="text-2xl font-semibold mb-4">Health Tips</h2>
+      <section className="mb-20">
+        <h2 className="text-2xl font-semibold mb-4 text-orange-600">
+          Health Tips
+        </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {healthTips.map((tip) => (
             <div key={tip.id} className="border rounded-lg p-4 shadow-md">
-              <h3 className="text-xl font-bold mb-2">{tip.title}</h3>
+              <h3 className="text-xl font-bold text-teal-600 mb-2">
+                {tip.title}
+              </h3>
               <p className="text-gray-700">{tip.content}</p>
             </div>
           ))}
@@ -65,11 +69,15 @@ export default function BlogPage() {
 
       {/* Health News Section */}
       <section className="mt-11">
-        <h2 className="text-2xl font-semibold mb-4">Latest Health News</h2>
+        <h2 className="text-2xl font-semibold mb-4 text-orange-600">
+          Latest Health News
+        </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {healthNews.map((news) => (
             <div key={news.id} className="border rounded-lg p-4 shadow-md">
-              <h3 className="text-xl font-bold mb-2">{news.title}</h3>
+              <h3 className="text-xl font-bold text-teal-600 mb-2">
+                {news.title}
+              </h3>
               <p className="text-gray-500 text-sm mb-2">{news.date}</p>
               <p className="text-gray-700">{news.content}</p>
             </div>

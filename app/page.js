@@ -6,7 +6,7 @@ import SessionLayout from "@/components/SessionLayout"; // Import the SessionLay
 export default function Home() {
   return (
     <div className="mt-10">
-      <h1>Browse our Services</h1>
+      <h1 className="text-gray-600">Browse our Services</h1>
       <p className="text-center mb-6">
         Love yourself enough to live a healthy lifestyle.
       </p>

@@ -22,18 +22,19 @@ const Navbar = () => {
 
   return (
     <SessionLayout>
-      {" "}
       {/* Wrap the session-sensitive content */}
       <nav className="bg-teal-600 h-20 flex justify-between items-center text-white p-5">
         <div className="h-full flex items-center text-xl">
-          <Image
-            className="object-contain"
-            src="/logo.png"
-            alt="Logo"
-            width={100}
-            height={100}
-          />
-          Stay Healthy
+          <Link href="/" className="flex items-center">
+            <Image
+              className="object-contain"
+              src="/logo.png"
+              alt="Logo"
+              width={100}
+              height={100}
+            />
+            <span className="ml-2">Stay Healthy</span>
+          </Link>
         </div>
         <div>
           <ul className="flex gap-8">

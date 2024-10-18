@@ -6,7 +6,7 @@ export default function AppointmentsPage() {
   return (
     <SessionLayout>
       <div className="mt-10">
-        <h1>Appointments</h1>
+        <h1 className="text-gray-600">Appointments</h1>
         <div className="flex flex-wrap justify-center gap-6">
           <Link href="/appointments/instant">
             <LandingCard

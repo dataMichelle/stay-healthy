@@ -39,7 +39,7 @@ export default function ReportsPage() {
 
   return (
     <div className="mt-10">
-      <h1 className="text-3xl font-bold">Reports</h1>
+      <h1 className="text-3xl font-bold text-gray-600">Reports</h1>
       <p className="mt-5">View and download reports for our doctors.</p>
       <table className="min-w-full bg-white mt-5">
         <thead>
