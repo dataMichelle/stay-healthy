@@ -1,6 +1,5 @@
-"use client"; // Ensure this is a Client Component
-
-import { useState, useEffect } from "react";
+"use client";
+import { useState, useEffect, useCallback } from "react"; // ✅ Add useCallback
 import doctorData from "../../data/doctors";
 import Modal from "@/components/Modal";
 import FeedbackForm from "@/components/FeedbackForm";
@@ -16,7 +15,6 @@ export default function ReviewsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedDoctor, setSelectedDoctor] = useState(null);
 
-  // ✅ Ensure localStorage is only accessed in the browser
   useEffect(() => {
     if (typeof window !== "undefined") {
       const storedReviews = localStorage.getItem("reviews");
@@ -48,46 +46,41 @@ export default function ReviewsPage() {
     setIsModalOpen(false);
   };
 
-  const sortDoctors = (key) => {
-    let direction = "ascending";
-    if (sortConfig.key === key && sortConfig.direction === "ascending") {
-      direction = "descending";
-    }
-
-    const sorted = [...sortedDoctors].sort((a, b) => {
-      if (a[key] < b[key]) {
-        return direction === "ascending" ? -1 : 1;
+  const sortDoctors = useCallback(
+    (key) => {
+      let direction = "ascending";
+      if (sortConfig.key === key && sortConfig.direction === "ascending") {
+        direction = "descending";
       }
-      if (a[key] > b[key]) {
-        return direction === "ascending" ? 1 : -1;
-      }
-      return 0;
-    });
+      const sorted = [...sortedDoctors].sort((a, b) => {
+        if (a[key] < b[key]) return direction === "ascending" ? -1 : 1;
+        if (a[key] > b[key]) return direction === "ascending" ? 1 : -1;
+        return 0;
+      });
+      setSortedDoctors(sorted);
+      setSortConfig({ key, direction });
+    },
+    [sortConfig, sortedDoctors] // ✅ Dependencies added to prevent stale state
+  );
 
-    setSortedDoctors(sorted);
-    setSortConfig({ key, direction });
-  };
-
-  const renderStars = (rating) => {
-    return (
-      <div className="flex">
-        {[1, 2, 3, 4, 5].map((star) => (
-          <span
-            key={star}
-            className={`cursor-pointer text-xl sm:text-2xl ${
-              star <= rating ? "text-yellow-500" : "text-gray-400"
-            }`}
-          >
-            ★
-          </span>
-        ))}
-      </div>
-    );
-  };
+  const renderStars = (rating) => (
+    <div className="flex">
+      {[1, 2, 3, 4, 5].map((star) => (
+        <span
+          key={star}
+          className={`cursor-pointer text-xl sm:text-2xl ${
+            star <= rating ? "text-yellow-500" : "text-gray-400"
+          }`}
+        >
+          ★
+        </span>
+      ))}
+    </div>
+  );
 
   useEffect(() => {
-    sortDoctors("lastName"); // Initial sort by last name when component mounts
-  }, []);
+    sortDoctors("lastName");
+  }, [sortDoctors]); // ✅ Fix: Include `sortDoctors` in the dependency array
 
   return (
     <div className="mt-10 mx-auto w-full px-4 sm:px-8 lg:w-4/5">
@@ -108,7 +101,7 @@ export default function ReviewsPage() {
         {sortedDoctors.map((doctor) => (
           <div
             key={doctor.id}
-            className="border rounded-lg p-4 bg-white shadow-md m-4" // Uniform margin for all views
+            className="border rounded-lg p-4 bg-white shadow-md m-4"
           >
             <h2 className="text-lg font-semibold">
               Dr. {doctor.firstName} {doctor.lastName}
