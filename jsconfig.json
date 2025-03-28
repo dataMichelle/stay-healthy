@@ -1,11 +1,11 @@
+// jsconfig.json
 {
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./app/*"],
-      "@data/*": ["./data/*"],
-      "@components/*": ["./app/components/*"],
-      "@utils/*": ["./app/utils/*"]
+      "@/components/*": ["components/*"],
+      "@/ui/*": ["ui/*"],
+      "@/data/*": ["data/*"]
     }
   }
 }
