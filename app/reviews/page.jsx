@@ -1,4 +1,4 @@
-"use client";
+"use client"; // Ensure this is a Client Component
 
 import { useState, useEffect } from "react";
 import doctorData from "../../data/doctors";
@@ -7,9 +7,7 @@ import FeedbackForm from "@/components/FeedbackForm";
 import { PiSortAscendingFill } from "react-icons/pi";
 
 export default function ReviewsPage() {
-  const [reviews, setReviews] = useState(
-    JSON.parse(localStorage.getItem("reviews")) || {}
-  );
+  const [reviews, setReviews] = useState({});
   const [sortedDoctors, setSortedDoctors] = useState(doctorData.doctors);
   const [sortConfig, setSortConfig] = useState({
     key: "lastName",
@@ -18,8 +16,18 @@ export default function ReviewsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedDoctor, setSelectedDoctor] = useState(null);
 
+  // ✅ Ensure localStorage is only accessed in the browser
   useEffect(() => {
-    localStorage.setItem("reviews", JSON.stringify(reviews));
+    if (typeof window !== "undefined") {
+      const storedReviews = JSON.parse(localStorage.getItem("reviews")) || {};
+      setReviews(storedReviews);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("reviews", JSON.stringify(reviews));
+    }
   }, [reviews]);
 
   const handleGiveReview = (doctor) => {

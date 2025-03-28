@@ -32,6 +32,8 @@ const Navbar = () => {
               alt="Logo"
               width={100}
               height={100}
+              priority // Ensures the image is prioritized for loading
+              style={{ width: "auto", height: "auto" }} // Maintains aspect ratio
             />
             <span className="ml-2">Stay Healthy</span>
           </Link>

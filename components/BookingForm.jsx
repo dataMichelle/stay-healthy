@@ -1,4 +1,6 @@
-import { useState } from "react";
+"use client"; // Ensure it's a Client Component
+
+import { useState, useEffect } from "react";
 
 export default function BookingForm({ doctor, onClose }) {
   const [name, setName] = useState("");
@@ -6,14 +8,20 @@ export default function BookingForm({ doctor, onClose }) {
   const [selectedDate, setSelectedDate] = useState("");
   const [timeSlots, setTimeSlots] = useState([]);
   const [selectedTime, setSelectedTime] = useState("");
-  const [appointments, setAppointments] = useState(
-    JSON.parse(localStorage.getItem("appointments")) || []
-  );
+  const [appointments, setAppointments] = useState([]); // Start as an empty array
+
+  // ✅ Load localStorage data in useEffect (Client-Side Only)
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const storedAppointments =
+        JSON.parse(localStorage.getItem("appointments")) || [];
+      setAppointments(storedAppointments);
+    }
+  }, []);
 
   const handleDateChange = (e) => {
     setSelectedDate(e.target.value);
-    // Fetch available time slots for the selected date
-    // For now, we'll use dummy data
+    // Fetch available time slots for the selected date (for now, dummy data)
     setTimeSlots(["10:00 AM", "11:00 AM", "12:00 PM"]);
   };
 
@@ -29,12 +37,15 @@ export default function BookingForm({ doctor, onClose }) {
       phoneNumber,
       date: selectedDate,
       time: selectedTime,
-      // Add other necessary fields here
     };
 
     const updatedAppointments = [...appointments, newAppointment];
     setAppointments(updatedAppointments);
-    localStorage.setItem("appointments", JSON.stringify(updatedAppointments));
+
+    // ✅ Ensure localStorage is available before setting data
+    if (typeof window !== "undefined") {
+      localStorage.setItem("appointments", JSON.stringify(updatedAppointments));
+    }
 
     alert("Appointment booked successfully!");
     onClose();
