@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useCallback } from "react"; // ✅ Add useCallback
+import { useState, useEffect, useCallback } from "react"; // ✅ Ensure useCallback is used correctly
 import doctorData from "../../data/doctors";
 import Modal from "@/components/Modal";
 import FeedbackForm from "@/components/FeedbackForm";
@@ -7,7 +7,7 @@ import { PiSortAscendingFill } from "react-icons/pi";
 
 export default function ReviewsPage() {
   const [reviews, setReviews] = useState({});
-  const [sortedDoctors, setSortedDoctors] = useState(doctorData.doctors);
+  const [sortedDoctors, setSortedDoctors] = useState([...doctorData.doctors]); // ✅ Avoid stale state issues
   const [sortConfig, setSortConfig] = useState({
     key: "lastName",
     direction: "ascending",
@@ -15,6 +15,7 @@ export default function ReviewsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedDoctor, setSelectedDoctor] = useState(null);
 
+  // ✅ Ensure localStorage is only accessed in the browser
   useEffect(() => {
     if (typeof window !== "undefined") {
       const storedReviews = localStorage.getItem("reviews");
@@ -27,6 +28,18 @@ export default function ReviewsPage() {
       localStorage.setItem("reviews", JSON.stringify(reviews));
     }
   }, [reviews]);
+
+  // ✅ Sort Doctors with Correct Dependencies
+  useEffect(() => {
+    const sorted = [...doctorData.doctors].sort((a, b) => {
+      if (a[sortConfig.key] < b[sortConfig.key])
+        return sortConfig.direction === "ascending" ? -1 : 1;
+      if (a[sortConfig.key] > b[sortConfig.key])
+        return sortConfig.direction === "ascending" ? 1 : -1;
+      return 0;
+    });
+    setSortedDoctors(sorted);
+  }, [sortConfig]); // ✅ Only depend on `sortConfig`
 
   const handleGiveReview = (doctor) => {
     setSelectedDoctor(doctor);
@@ -46,22 +59,13 @@ export default function ReviewsPage() {
     setIsModalOpen(false);
   };
 
-  const sortDoctors = useCallback(
-    (key) => {
-      let direction = "ascending";
-      if (sortConfig.key === key && sortConfig.direction === "ascending") {
-        direction = "descending";
-      }
-      const sorted = [...sortedDoctors].sort((a, b) => {
-        if (a[key] < b[key]) return direction === "ascending" ? -1 : 1;
-        if (a[key] > b[key]) return direction === "ascending" ? 1 : -1;
-        return 0;
-      });
-      setSortedDoctors(sorted);
-      setSortConfig({ key, direction });
-    },
-    [sortConfig, sortedDoctors] // ✅ Dependencies added to prevent stale state
-  );
+  const sortDoctors = (key) => {
+    let direction = "ascending";
+    if (sortConfig.key === key && sortConfig.direction === "ascending") {
+      direction = "descending";
+    }
+    setSortConfig({ key, direction }); // ✅ Correct way to update sort
+  };
 
   const renderStars = (rating) => (
     <div className="flex">
@@ -77,10 +81,6 @@ export default function ReviewsPage() {
       ))}
     </div>
   );
-
-  useEffect(() => {
-    sortDoctors("lastName");
-  }, [sortDoctors]); // ✅ Fix: Include `sortDoctors` in the dependency array
 
   return (
     <div className="mt-10 mx-auto w-full px-4 sm:px-8 lg:w-4/5">
@@ -132,9 +132,7 @@ export default function ReviewsPage() {
         title="Give Review"
         description={`Review for Dr. ${selectedDoctor?.firstName} ${selectedDoctor?.lastName} (${selectedDoctor?.specialty})`}
       >
-        {selectedDoctor && (
-          <FeedbackForm doctor={selectedDoctor} onSubmit={handleSubmitReview} />
-        )}
+        {selectedDoctor && <FeedbackForm doctor={selectedDoctor} />}
       </Modal>
     </div>
   );

@@ -1,20 +1,27 @@
-// components/FeedbackForm.jsx
+"use client";
 import { useState } from "react";
 
-export default function FeedbackForm({ doctor, onSubmit }) {
+export default function FeedbackForm({ doctor }) {
   const [name, setName] = useState("");
   const [review, setReview] = useState("");
   const [rating, setRating] = useState(0);
 
-  // Handle form submission
+  // ✅ Handle submission inside the component
   const handleSubmit = (e) => {
     e.preventDefault();
     if (rating === 0) {
       alert("Please provide a rating before submitting.");
       return;
     }
-    onSubmit({ name, review, rating });
-    // Reset the form after submission
+
+    // ✅ Dispatch a custom event instead of passing `onSubmit`
+    document.dispatchEvent(
+      new CustomEvent("reviewSubmitted", {
+        detail: { name, review, rating },
+      })
+    );
+
+    // ✅ Reset form after submission
     setName("");
     setReview("");
     setRating(0);
