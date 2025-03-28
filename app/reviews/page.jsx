@@ -19,8 +19,8 @@ export default function ReviewsPage() {
   // ✅ Ensure localStorage is only accessed in the browser
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const storedReviews = JSON.parse(localStorage.getItem("reviews")) || {};
-      setReviews(storedReviews);
+      const storedReviews = localStorage.getItem("reviews");
+      setReviews(storedReviews ? JSON.parse(storedReviews) : {});
     }
   }, []);
 
