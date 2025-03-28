@@ -1,11 +1,10 @@
-// jsconfig.json
 {
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@/components/*": ["components/*"],
-      "@/ui/*": ["ui/*"],
-      "@/data/*": ["data/*"]
+      "@/components/*": ["./components/*"], // ✅ Components are in root
+      "@/ui/*": ["./ui/*"], // ✅ UI folder in root
+      "@/data/*": ["./data/*"] // ✅ Data folder in root
     }
   }
 }
