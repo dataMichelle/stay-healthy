@@ -2,9 +2,9 @@
 import { useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation"; // Use useSearchParams in App Router
 import doctorData from "../../../data/doctors.js"; // Import the doctors data
-import Card from "@/ui/Card"; // Import the Card component
-import BookingForm from "@/components/BookingForm"; // Import the BookingForm component
-import Modal from "@/components/Modal"; // Import the Modal component
+import Card from "@/../ui/Card"; // Import the Card component
+import BookingForm from "../../../components/BookingForm"; // Import the BookingForm component
+import Modal from "../../../components/Modal"; // Import the Modal component
 
 export default function SearchResults() {
   return (
